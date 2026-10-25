@@ -1,0 +1,59 @@
+{# Category dropdown with icons (Add/Edit transaction). Expects: form, categories #}
+{% set selected_code = form.code.data or (categories[0].code if categories else '') %}
+<div class="ios-category-picker" data-picker>
+  <select
+    name="{{ form.code.name }}"
+    id="code"
+    class="ios-category-picker-native visually-hidden"
+    aria-labelledby="category-label"
+    tabindex="-1"
+    {% if form.code.errors %}aria-invalid="true"{% endif %}
+  >
+    {% for cat in categories %}
+      <option value="{{ cat.code }}" {% if cat.code == selected_code %}selected{% endif %}>
+        {{ cat.name }} ({{ cat.kind }})
+      </option>
+    {% endfor %}
+  </select>
+
+  <button
+    type="button"
+    class="ios-category-picker-trigger"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-controls="category-picker-menu"
+    id="category-picker-trigger"
+  >
+    <span class="ios-category-picker-value" data-role="value">
+      {% for cat in categories if cat.code == selected_code %}
+        {% with code=cat.code %}{% include "ios/_category_icon.html" %}{% endwith %}
+        <span class="ios-category-picker-text">{{ cat.name }} <span class="ios-category-picker-kind">({{ cat.kind }})</span></span>
+      {% endfor %}
+    </span>
+    <i class="bi bi-chevron-expand ios-category-picker-chevron" aria-hidden="true"></i>
+  </button>
+
+  <ul
+    class="ios-category-picker-menu"
+    id="category-picker-menu"
+    role="listbox"
+    aria-labelledby="category-label"
+    hidden
+  >
+    {% for cat in categories %}
+      <li
+        role="option"
+        data-value="{{ cat.code }}"
+        aria-selected="{{ 'true' if cat.code == selected_code else 'false' }}"
+        class="ios-category-picker-option{% if cat.code == selected_code %} is-selected{% endif %}"
+      >
+        {% with code=cat.code %}{% include "ios/_category_icon.html" %}{% endwith %}
+        <span class="ios-category-picker-option-text">
+          {{ cat.name }}
+          <span class="ios-category-picker-kind">({{ cat.kind }})</span>
+        </span>
+        <i class="bi bi-check2 ios-category-picker-check" aria-hidden="true"></i>
+      </li>
+    {% endfor %}
+  </ul>
+</div>

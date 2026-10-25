@@ -1,0 +1,62 @@
+{# One project card — expects: p, csrf_token #}
+{% set balance = p.total_income - p.total_expense %}
+<div class="ios-swipe-row" data-swipe-row>
+  <div class="ios-swipe-row-actions" aria-hidden="true">
+    <a href="{{ url_for('projects.edit', project_id=p.id) }}"
+       class="ios-swipe-action ios-swipe-action-edit">
+      <i class="bi bi-pencil" aria-hidden="true"></i>
+      <span>Edit</span>
+    </a>
+    <form method="post"
+          action="{{ url_for('projects.delete', project_id=p.id) }}"
+          class="ios-swipe-delete-form"
+          data-confirm="Delete “{{ p.name }}”? All transactions will be removed. This cannot be undone.">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit"
+              name="submit"
+              value="Delete project permanently"
+              class="ios-swipe-action ios-swipe-action-delete">
+        <i class="bi bi-trash" aria-hidden="true"></i>
+        <span>Delete</span>
+      </button>
+    </form>
+  </div>
+  <div class="ios-swipe-row-panel">
+    <a class="ios-project-block" href="{{ url_for('projects.detail', project_id=p.id) }}">
+      <div class="ios-project-block-head">
+        <div class="ios-project-block-main">
+          <div class="ios-project-block-title-row">
+            <h2 class="ios-project-block-name">{{ p.name }}</h2>
+            <div class="ios-project-block-title-aside">
+              {% with status=p.status %}{% include "projects/_status_badge.html" %}{% endwith %}
+              <span class="ios-chevron"><i class="bi bi-chevron-right"></i></span>
+            </div>
+          </div>
+          {% if p.address or p.city or p.owner_name %}
+            <p class="ios-project-block-address">
+              {% if p.address %}{{ p.address }}{% endif %}
+              {% if p.address and p.city %} · {% endif %}
+              {% if p.city %}{{ p.city }}{% endif %}
+              {% if p.owner_name and (p.address or p.city) %} · {% endif %}
+              {% if p.owner_name %}{{ p.owner_name }}{% endif %}
+            </p>
+          {% endif %}
+        </div>
+      </div>
+      <div class="ios-project-block-stats">
+        <div>
+          <span class="ios-stat-label">Balance</span>
+          <span class="ios-project-block-balance {{ 'positive' if balance >= 0 else 'negative' }}">{{ balance | eur }}</span>
+        </div>
+        <div>
+          <span class="ios-stat-label"><i class="bi bi-arrow-down-left text-success"></i> In</span>
+          <span class="ios-project-block-stat">{{ p.total_income | eur }}</span>
+        </div>
+        <div>
+          <span class="ios-stat-label"><i class="bi bi-arrow-up-right text-danger"></i> Out</span>
+          <span class="ios-project-block-stat">{{ p.total_expense | eur }}</span>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>

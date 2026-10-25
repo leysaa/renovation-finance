@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% set hide_tab_bar = true %}
+
+{% block title %}Delete{% endblock %}
+
+{% block page_heading %}
+  <a href="{{ url_for('projects.index') }}" class="ios-back ps-0 d-inline-flex mb-1" aria-label="Back"><i class="bi bi-chevron-left"></i></a>
+  <h1 class="ios-large-title">Delete</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="ios-empty" style="padding-top: 16px;">
+    <i class="bi bi-exclamation-triangle text-danger"></i>
+    <p class="fw-semibold text-body">{{ project.name }}</p>
+    <p class="small">All transactions will be removed.</p>
+  </div>
+
+  <form method="post" class="ios-form">
+    {{ form.hidden_tag() }}
+    {{ form.submit(class="ios-btn-primary ios-btn-destructive mb-2", value="Delete") }}
+    <a class="ios-btn-ghost" href="{{ url_for('projects.index') }}">Cancel</a>
+  </form>
+{% endblock %}

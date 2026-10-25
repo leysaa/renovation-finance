@@ -1,0 +1,8 @@
+{% set status_icon = {
+  'active': 'bi-circle-fill',
+  'completed': 'bi-checkmark-circle-fill'
+}.get(status, 'bi-circle') %}
+<span class="ios-status {{ status }}">
+  <i class="bi {{ status_icon }}" style="font-size: 8px;"></i>
+  {{ status_labels[status] }}
+</span>

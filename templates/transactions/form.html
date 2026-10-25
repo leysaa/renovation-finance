@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% set hide_tab_bar = true %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block page_heading %}
+  <a href="{{ cancel_url }}" class="ios-back ps-0 d-inline-flex mb-1" aria-label="Back"><i class="bi bi-chevron-left"></i></a>
+  <h1 class="ios-large-title">{{ title }}</h1>
+  <p class="ios-subtitle"><i class="bi bi-building"></i> {{ project.name }}</p>
+{% endblock %}
+
+{% block content %}
+  <form method="post" novalidate class="ios-form">
+    {{ form.hidden_tag() }}
+    {% if list_filters %}
+      <input type="hidden" name="code_filter" value="{{ list_filters.code or '' }}">
+      <input type="hidden" name="date_from_filter" value="{{ list_filters.date_from or '' }}">
+      <input type="hidden" name="date_to_filter" value="{{ list_filters.date_to or '' }}">
+    {% endif %}
+
+    <div class="ios-form-group">
+      <div class="ios-form-row ios-form-row-category">
+        <label id="category-label"><i class="bi bi-tag"></i> Category</label>
+        {% include "ios/_category_picker.html" %}
+        {% for error in form.code.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="ios-form-row">
+        <label for="amount"><i class="bi bi-currency-euro"></i> Amount</label>
+        {{ form.amount(class="form-control" + (" is-invalid" if form.amount.errors else ""), id="amount", inputmode="decimal", step="any", min="0.01") }}
+        {% for error in form.amount.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+      </div>
+      <div class="ios-form-row">
+        <label for="date"><i class="bi bi-calendar3"></i> Date</label>
+        {{ form.date(class="form-control" + (" is-invalid" if form.date.errors else ""), id="date", type="date") }}
+      </div>
+      <div class="ios-form-row">
+        <label for="description"><i class="bi bi-text-left"></i> Note</label>
+        {{ form.description(class="form-control", id="description", placeholder="Optional") }}
+      </div>
+    </div>
+
+    {{ form.submit(class="ios-btn-primary mb-2") }}
+    <a class="ios-btn-ghost" href="{{ cancel_url }}">Cancel</a>
+  </form>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='transaction-category-picker.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{# Expects: code (I|M|S|T|O) — colors match pie chart (category-colors.css) #}
+{% set icons = {
+  'I': 'bi-arrow-down-circle',
+  'M': 'bi-box-seam',
+  'T': 'bi-tools',
+  'O': 'bi-three-dots'
+} %}
+<span class="ios-list-icon ios-cat-icon" data-code="{{ code }}">
+  {% if code == 'S' %}
+    {% include "ios/_labour_icon.svg.html" %}
+  {% else %}
+    <i class="bi {{ icons.get(code, 'bi-receipt') }}"></i>
+  {% endif %}
+</span>

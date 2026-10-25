@@ -1,0 +1,39 @@
+{# tx, project, code_filter, date_from, date_to, csrf_token #}
+<li class="ios-list-item">
+  <div class="ios-swipe-row ios-swipe-row--list ios-swipe-row--delete-only" data-swipe-row data-swipe-width="72">
+    <div class="ios-swipe-row-actions" aria-hidden="true">
+      <form method="post"
+            action="{{ url_for('transactions.delete', project_id=project.id, transaction_id=tx.id, code=code_filter, date_from=date_from, date_to=date_to) }}"
+            class="ios-swipe-delete-form"
+            data-confirm="Delete this {{ tx.amount | eur }} transaction ({{ tx.date }})? This cannot be undone.">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <input type="hidden" name="code_filter" value="{{ code_filter or '' }}">
+        <input type="hidden" name="date_from_filter" value="{{ date_from or '' }}">
+        <input type="hidden" name="date_to_filter" value="{{ date_to or '' }}">
+        <button type="submit"
+                name="submit"
+                value="Delete transaction"
+                class="ios-swipe-action ios-swipe-action-delete">
+          <i class="bi bi-trash" aria-hidden="true"></i>
+          <span>Delete</span>
+        </button>
+      </form>
+    </div>
+    <div class="ios-swipe-row-panel">
+      <div class="ios-swipe-list-row">
+        {% with code=tx.code %}{% include "ios/_category_icon.html" %}{% endwith %}
+        <a href="{{ url_for('transactions.edit', project_id=project.id, transaction_id=tx.id, code=code_filter, date_from=date_from, date_to=date_to) }}"
+           class="ios-list-body text-decoration-none text-body flex-grow-1 py-2">
+          <div class="ios-list-title">{{ tx.category_name }}</div>
+          <div class="ios-list-meta">
+            <i class="bi bi-calendar3"></i> {{ tx.date }}
+            {% if tx.description %} · {{ tx.description }}{% endif %}
+          </div>
+        </a>
+        <span class="ios-list-amount ios-cat-amount" data-code="{{ tx.code }}">
+          {{ tx.amount | eur }}
+        </span>
+      </div>
+    </div>
+  </div>
+</li>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% set hide_tab_bar = true %}
+
+{% block title %}Sign in{% endblock %}
+{% block body_class %}auth-screen no-tab-bar{% endblock %}
+
+{% block content %}
+  <div class="ios-login-hero">
+    <i class="bi bi-building"></i>
+    <h1>Renovation</h1>
+  </div>
+
+  <form method="post" novalidate class="ios-form">
+    {{ form.hidden_tag() }}
+    <div class="ios-form-group">
+      <div class="ios-form-row">
+        <label for="username"><i class="bi bi-person"></i> Username</label>
+        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else ""), autocomplete="username", autofocus=True, id="username", placeholder="Username") }}
+        {% for error in form.username.errors %}
+          <div class="text-danger small mt-1">{{ error }}</div>
+        {% endfor %}
+      </div>
+      <div class="ios-form-row">
+        <label for="password"><i class="bi bi-lock"></i> Password</label>
+        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else ""), autocomplete="current-password", id="password", placeholder="Password") }}
+        {% for error in form.password.errors %}
+          <div class="text-danger small mt-1">{{ error }}</div>
+        {% endfor %}
+      </div>
+    </div>
+    {{ form.submit(class="ios-btn-primary", value="Sign in") }}
+  </form>
+{% endblock %}

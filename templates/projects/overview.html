@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Overview{% endblock %}
+
+{% block page_heading %}
+  <h1 class="ios-large-title d-flex align-items-center gap-2">
+    <i class="bi bi-speedometer2 text-primary" style="font-size: 0.85em;"></i>
+    Overview
+  </h1>
+{% endblock %}
+
+{% block content %}
+  <div class="ios-chart-card mb-4">
+    <div class="ios-chart-card-head">
+      <i class="bi bi-bar-chart"></i>
+      <span>Balance by project</span>
+    </div>
+    <div class="ios-chart-wrap ios-chart-wrap-overview">
+      <canvas id="overviewBalanceChart" aria-label="Balance by project"></canvas>
+    </div>
+    <p class="ios-chart-hint mb-0"><i class="bi bi-hand-index"></i> Tap a bar to open charts</p>
+  </div>
+
+  <p class="ios-section-label">Export</p>
+  {% include "ios/_export_links.html" %}
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='chart-theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='overview-chart.js') }}"></script>
+{% endblock %}

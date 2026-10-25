@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}Projects{% endblock %}
+
+{% block page_heading %}
+  <h1 class="ios-large-title">Projects</h1>
+{% endblock %}
+
+{% block content %}
+  <nav class="ios-segmented" aria-label="Status">
+    <a href="{{ url_for('projects.index') }}" class="{{ 'active' if not status_filter else '' }}">All</a>
+    {% for code, label in status_labels.items() %}
+      <a href="{{ url_for('projects.index', status=code) }}"
+         class="{{ 'active' if status_filter == code else '' }}">{{ label }}</a>
+    {% endfor %}
+  </nav>
+
+  {% if not projects %}
+    <div class="ios-empty">
+      <i class="bi bi-building"></i>
+      <p class="mb-3">No projects yet</p>
+      <a href="{{ url_for('projects.create') }}" class="ios-btn-ghost"><i class="bi bi-plus-lg"></i> Add</a>
+    </div>
+  {% else %}
+    <div class="ios-project-blocks">
+      {% for p in projects %}
+        {% include "projects/_project_block.html" %}
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <a href="{{ url_for('projects.create') }}" class="ios-fab" aria-label="New project">
+    <i class="bi bi-plus-lg"></i>
+  </a>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='project-swipe.js') }}"></script>
+{% endblock %}

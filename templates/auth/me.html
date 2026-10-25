@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Account{% endblock %}
+
+{% block page_heading %}
+  <h1 class="ios-large-title">Account</h1>
+{% endblock %}
+
+{% block content %}
+  <ul class="ios-list">
+    <li class="ios-list-item">
+      <div class="ios-list-link">
+        <span class="ios-list-icon blue"><i class="bi bi-person"></i></span>
+        <div class="ios-list-body">
+          <div class="ios-list-title">{{ current_user.username }}</div>
+        </div>
+      </div>
+    </li>
+  </ul>
+
+  <p class="ios-section-label">Appearance</p>
+  <ul class="ios-list">
+    <li class="ios-list-item">
+      <label class="ios-switch-row" for="night-mode-toggle">
+        <span class="ios-switch-row-leading">
+          <span class="ios-list-icon gray"><i class="bi bi-moon-stars"></i></span>
+          <span class="ios-switch-row-label">Night mode</span>
+        </span>
+        <input type="checkbox"
+               class="ios-switch-input"
+               id="night-mode-toggle"
+               role="switch"
+               aria-label="Night mode">
+        <span class="ios-switch" aria-hidden="true"></span>
+      </label>
+    </li>
+  </ul>
+
+  <ul class="ios-list">
+    <li class="ios-list-item">
+      <a class="ios-list-link" href="{{ url_for('auth.logout') }}">
+        <span class="ios-list-icon red"><i class="bi bi-box-arrow-right"></i></span>
+        <div class="ios-list-body">
+          <div class="ios-list-title text-danger">Sign out</div>
+        </div>
+        <span class="ios-chevron"><i class="bi bi-chevron-right"></i></span>
+      </a>
+    </li>
+  </ul>
+{% endblock %}

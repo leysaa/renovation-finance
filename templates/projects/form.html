@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% set hide_tab_bar = true %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block page_heading %}
+  {% if project_id %}
+    <a href="{{ url_for('projects.detail', project_id=project_id) }}" class="ios-back ps-0 d-inline-flex mb-1" aria-label="Back"><i class="bi bi-chevron-left"></i></a>
+  {% else %}
+    <a href="{{ url_for('projects.index') }}" class="ios-back ps-0 d-inline-flex mb-1" aria-label="Back"><i class="bi bi-chevron-left"></i></a>
+  {% endif %}
+  <h1 class="ios-large-title">{{ title }}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post" novalidate class="ios-form">
+    {{ form.hidden_tag() }}
+
+    <div class="ios-form-group">
+      <div class="ios-form-row">
+        <label for="name"><i class="bi bi-building"></i> Name</label>
+        {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else ""), id="name") }}
+        {% for error in form.name.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+      </div>
+    </div>
+
+    <p class="ios-section-label">Location & owner</p>
+    <div class="ios-form-group">
+      <div class="ios-form-row">
+        <label for="owner_name"><i class="bi bi-person"></i> Owner</label>
+        {{ form.owner_name(class="form-control", id="owner_name") }}
+      </div>
+      <div class="ios-form-row">
+        <label for="city"><i class="bi bi-geo-alt"></i> City</label>
+        {{ form.city(class="form-control", id="city") }}
+      </div>
+      <div class="ios-form-row">
+        <label for="address"><i class="bi bi-signpost"></i> Address</label>
+        {{ form.address(class="form-control", id="address") }}
+      </div>
+    </div>
+
+    <p class="ios-section-label">Details</p>
+    <div class="ios-form-group">
+      <div class="ios-form-row">
+        <label for="area_m2"><i class="bi bi-rulers"></i> Area (m²)</label>
+        {{ form.area_m2(class="form-control", id="area_m2", inputmode="decimal", step="any") }}
+      </div>
+      <div class="ios-form-row">
+        <label for="budget"><i class="bi bi-pie-chart"></i> Budget (€)</label>
+        {{ form.budget(class="form-control", id="budget", inputmode="decimal", step="any") }}
+      </div>
+      <div class="ios-form-row">
+        <label for="status"><i class="bi bi-flag"></i> Status</label>
+        {{ form.status(class="form-select", id="status") }}
+      </div>
+      <div class="ios-form-row">
+        <label for="start_date"><i class="bi bi-calendar"></i> Start</label>
+        {{ form.start_date(class="form-control", id="start_date", type="date") }}
+      </div>
+      <div class="ios-form-row">
+        <label for="end_date"><i class="bi bi-calendar-check"></i> End</label>
+        {{ form.end_date(class="form-control", id="end_date", type="date") }}
+      </div>
+    </div>
+
+    <div class="ios-form-group">
+      <div class="ios-form-row">
+        <label for="notes"><i class="bi bi-text-left"></i> Notes</label>
+        {{ form.notes(class="form-control", id="notes", rows="3") }}
+      </div>
+    </div>
+
+    {{ form.submit(class="ios-btn-primary mb-2") }}
+    {% if project_id %}
+      <a class="ios-btn-ghost" href="{{ url_for('projects.detail', project_id=project_id) }}">Cancel</a>
+      <a href="{{ url_for('projects.delete', project_id=project_id) }}" class="ios-btn-ghost text-danger mt-4">
+        <i class="bi bi-trash"></i> Delete project
+      </a>
+    {% else %}
+      <a class="ios-btn-ghost" href="{{ url_for('projects.index') }}">Cancel</a>
+    {% endif %}
+  </form>
+{% endblock %}

@@ -1,0 +1,9 @@
+{# project, current: 'transactions' | 'charts' #}
+<nav class="ios-segmented ios-segmented-nav mb-3" aria-label="Project sections">
+  <a href="{{ url_for('projects.detail', project_id=project.id) }}"
+     class="{{ 'active' if current == 'transactions' else '' }}"
+     {% if current == 'transactions' %}aria-current="page"{% endif %}>Transactions</a>
+  <a href="{{ url_for('charts.project_charts', project_id=project.id) }}"
+     class="{{ 'active' if current == 'charts' else '' }}"
+     {% if current == 'charts' %}aria-current="page"{% endif %}>Charts</a>
+</nav>

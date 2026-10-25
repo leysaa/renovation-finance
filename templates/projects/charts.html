@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }} — Charts{% endblock %}
+
+{% block page_heading %}
+  <a href="{{ url_for('projects.index') }}" class="ios-back ps-0 d-inline-flex mb-1" aria-label="Back to projects">
+    <i class="bi bi-chevron-left"></i>
+  </a>
+  <h1 class="ios-large-title">{{ project.name }}</h1>
+  <div class="mb-2">{% with status=project.status %}{% include "projects/_status_badge.html" %}{% endwith %}</div>
+  {% if project.address or project.city or project.owner_name %}
+    <p class="ios-subtitle mb-1">
+      {% if project.address %}<i class="bi bi-signpost"></i> {{ project.address }}{% endif %}
+      {% if project.address and project.city %} · {% endif %}
+      {% if project.city %}<i class="bi bi-geo-alt"></i> {{ project.city }}{% endif %}
+      {% if project.owner_name and (project.address or project.city) %} · {% endif %}
+      {% if project.owner_name %}<i class="bi bi-person"></i> {{ project.owner_name }}{% endif %}
+    </p>
+  {% endif %}
+  {% with current='charts' %}{% include "projects/_project_nav.html" %}{% endwith %}
+{% endblock %}
+
+{% block content %}
+  <div id="project-charts" data-project-id="{{ project.id }}">
+    <div class="ios-chart-card mb-3">
+      <div class="ios-chart-card-head"><i class="bi bi-pie-chart"></i> Expenses by category</div>
+      <div class="ios-chart-wrap ios-chart-wrap-pie">
+        <canvas id="chartExpenses" aria-label="Expenses by category"></canvas>
+      </div>
+      <ul id="chartExpenseTotals" class="ios-list ios-chart-totals mt-3 mb-0" hidden aria-label="Totals by category"></ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="{{ url_for('static', filename='chart-theme.js') }}"></script>
+  <script src="{{ url_for('static', filename='project-charts.js') }}"></script>
+{% endblock %}

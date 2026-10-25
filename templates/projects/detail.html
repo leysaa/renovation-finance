@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block page_heading %}
+  <a href="{{ url_for('projects.index') }}" class="ios-back ps-0 d-inline-flex mb-1" aria-label="Back to projects">
+    <i class="bi bi-chevron-left"></i>
+  </a>
+  <h1 class="ios-large-title">{{ project.name }}</h1>
+  <div class="mb-2">{% with status=project.status %}{% include "projects/_status_badge.html" %}{% endwith %}</div>
+  {% if project.address or project.city or project.owner_name %}
+    <p class="ios-subtitle mb-1">
+      {% if project.address %}<i class="bi bi-signpost"></i> {{ project.address }}{% endif %}
+      {% if project.address and project.city %} · {% endif %}
+      {% if project.city %}<i class="bi bi-geo-alt"></i> {{ project.city }}{% endif %}
+      {% if project.owner_name and (project.address or project.city) %} · {% endif %}
+      {% if project.owner_name %}<i class="bi bi-person"></i> {{ project.owner_name }}{% endif %}
+    </p>
+  {% endif %}
+  {% with current='transactions' %}{% include "projects/_project_nav.html" %}{% endwith %}
+{% endblock %}
+
+{% block content %}
+  <div class="ios-stats-scroll" aria-label="Summary">
+    <div class="ios-stat-chip">
+      <i class="bi bi-wallet2"></i>
+      <div class="ios-stat-label">Balance</div>
+      <div class="ios-stat-value {{ 'text-success' if balance >= 0 else 'text-danger' }}">{{ balance | eur }}</div>
+    </div>
+    <div class="ios-stat-chip">
+      <i class="bi bi-arrow-down-left text-success"></i>
+      <div class="ios-stat-label">Income</div>
+      <div class="ios-stat-value text-success">{{ total_income | eur }}</div>
+    </div>
+    <div class="ios-stat-chip">
+      <i class="bi bi-arrow-up-right text-danger"></i>
+      <div class="ios-stat-label">Expenses</div>
+      <div class="ios-stat-value text-danger">{{ total_expense | eur }}</div>
+    </div>
+    <div class="ios-stat-chip">
+      <i class="bi bi-pie-chart"></i>
+      <div class="ios-stat-label">Budget</div>
+      <div class="ios-stat-value">{{ project.budget | eur if project.budget is not none else '—' }}</div>
+      {% if budget_used_pct is not none %}
+        <div class="ios-stat-label">{{ budget_used_pct | round(0) | int }}% used</div>
+        <div class="ios-progress {{ 'over' if budget_used_pct > 100 else '' }}">
+          <span style="width: {{ budget_used_pct if budget_used_pct <= 100 else 100 }}%;"></span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <nav class="ios-segmented ios-segmented-category" aria-label="Category">
+    <a href="{{ url_for('projects.detail', project_id=project.id, date_from=date_from, date_to=date_to) }}"
+       class="{{ 'active' if not code_filter else '' }}"
+       {% if not code_filter %}aria-current="true"{% endif %}>All</a>
+    {% for cat in categories %}
+      <a href="{{ url_for('projects.detail', project_id=project.id, code=cat.code, date_from=date_from, date_to=date_to) }}"
+         class="{{ 'active' if code_filter == cat.code else '' }}"
+         data-code="{{ cat.code }}"
+         {% if code_filter == cat.code %}aria-current="true"{% endif %}>
+        {{ category_short_labels.get(cat.code, cat.name) }}
+      </a>
+    {% endfor %}
+  </nav>
+
+  <button class="ios-filter-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#txDateFilters"
+          aria-expanded="{{ 'true' if (date_from or date_to) else 'false' }}" aria-controls="txDateFilters">
+    <span><i class="bi bi-calendar3"></i> Dates</span>
+    <i class="bi bi-chevron-down"></i>
+  </button>
+  <div class="collapse {{ 'show' if (date_from or date_to) else '' }}" id="txDateFilters">
+    <div class="ios-filter-panel mb-3">
+      <form method="get" class="vstack gap-2">
+        {% if code_filter %}
+          <input type="hidden" name="code" value="{{ code_filter }}">
+        {% endif %}
+        <div class="row g-2">
+          <div class="col-6">
+            <input type="date" name="date_from" id="date_from" class="form-control" value="{{ date_from or '' }}" aria-label="From">
+          </div>
+          <div class="col-6">
+            <input type="date" name="date_to" id="date_to" class="form-control" value="{{ date_to or '' }}" aria-label="To">
+          </div>
+        </div>
+        <button type="submit" class="ios-btn-primary py-2" style="min-height:44px;">Apply</button>
+        {% if date_from or date_to %}
+          <a href="{{ url_for('projects.detail', project_id=project.id, code=code_filter) }}" class="ios-btn-ghost">Clear dates</a>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+
+  <div class="ios-section-header-row">
+    <p class="ios-section-label mb-0">Transactions</p>
+    <a href="{{ url_for('export.project_xlsx', project_id=project.id) }}" class="ios-export-link ios-export-link-inline">
+      <i class="bi bi-file-earmark-spreadsheet"></i> Excel
+    </a>
+  </div>
+
+  {% if not transactions %}
+    <div class="ios-empty">
+      <i class="bi bi-receipt"></i>
+      <p class="mb-0">
+        No transactions{% if code_filter %} ({{ category_short_labels.get(code_filter, code_filter) }}){% endif %}
+      </p>
+    </div>
+  {% else %}
+    <ul class="ios-list">
+      {% for tx in transactions %}
+        {% include "ios/_transaction_swipe_row.html" %}
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <a href="{{ url_for('transactions.create', project_id=project.id, code=code_filter, date_from=date_from, date_to=date_to) }}"
+     class="ios-fab" aria-label="Add transaction">
+    <i class="bi bi-plus-lg"></i>
+  </a>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='project-swipe.js') }}"></script>
+{% endblock %}

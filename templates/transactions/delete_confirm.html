@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% set hide_tab_bar = true %}
+
+{% block title %}Delete{% endblock %}
+
+{% block page_heading %}
+  <a href="{{ cancel_url }}" class="ios-back ps-0 d-inline-flex mb-1" aria-label="Back"><i class="bi bi-chevron-left"></i></a>
+  <h1 class="ios-large-title">Delete</h1>
+{% endblock %}
+
+{% block content %}
+  <div class="ios-empty" style="padding-top: 16px;">
+    <i class="bi bi-trash text-danger"></i>
+    <p class="fw-semibold">{{ transaction.amount | eur }}</p>
+    <p class="ios-subtitle mb-0"><i class="bi bi-calendar3"></i> {{ transaction.date }}</p>
+  </div>
+
+  <form method="post" class="ios-form">
+    {{ form.hidden_tag() }}
+    {% if list_filters %}
+      <input type="hidden" name="code_filter" value="{{ list_filters.code or '' }}">
+      <input type="hidden" name="date_from_filter" value="{{ list_filters.date_from or '' }}">
+      <input type="hidden" name="date_to_filter" value="{{ list_filters.date_to or '' }}">
+    {% endif %}
+    {{ form.submit(class="ios-btn-primary ios-btn-destructive mb-2", value="Delete") }}
+    <a class="ios-btn-ghost" href="{{ cancel_url }}">Cancel</a>
+  </form>
+{% endblock %}
